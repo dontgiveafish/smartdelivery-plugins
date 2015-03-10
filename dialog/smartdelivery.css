@@ -1,0 +1,111 @@
+.smartdelivery-dialog-overlay {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAd0SU1FB94JCQwBCmQs2z8AAAANSURBVAjXY2BgYDgDAADRAM3QD+wzAAAAAElFTkSuQmCC);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.smartdelivery-dialog {
+    font-family: Arial, Helvetica, sans-serif;
+    
+    position: fixed;
+    border-radius: 10px;
+    padding : 15px;
+    background : #fff;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.smartdelivery-dialog ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 24px;
+    color: #666666;
+}
+
+.smartdelivery-dialog li {
+    cursor: pointer;
+    padding: 5px;
+    
+}
+
+.smartdelivery-dialog li:before {
+    display: none;
+}
+
+.smartdelivery-dialog li:nth-child(even) {
+    background-color: #f0f0f0;
+}
+
+.smartdelivery-dialog li:hover {
+    color: #4db4d7;
+}
+
+.smartdelivery-dialog li.selected {
+    background-color: #4db4d7!important;
+    color: white;
+}
+
+.smartdelivery-dialog-closer {
+    position: fixed;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+
+    border-radius: 25px;
+    z-index: 1001;
+    background-color: #fff;
+    cursor: pointer;
+    margin-left: -13px;
+    margin-top: -13px;
+    
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+.smartdelivery-dialog-closer:hover {
+    background-position: -25px 0;
+}
+
+.smartdelivery-dialog-services-overlay {
+    overflow-y: scroll;
+    float : left;
+    text-align: left;
+}
+         
+.smartdelivery-dialog-services-overlay select {
+    width: 100%;
+}
+
+.smartdelivery-dialog-map-infowindow {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 24px;
+    color: #000;
+    text-align: left;
+}
+
+.smartdelivery-icon {
+    vertical-align: middle;
+}
+
+.smartdelivery-copyright {
+    float:right;
+    font-size: 10px;
+    line-height: 14px!important;
+    color: #000!important;
+
+}
+
+.smartdelivery-copyright a {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #000!important;
+    text-decoration: underline;
+}
