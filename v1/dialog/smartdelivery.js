@@ -1,5 +1,5 @@
 /*
-        Smartdelivery.in.ua dialog v0.9 - another jQuery Plugin
+        Smartdelivery dialog v0.9 - another jQuery Plugin
         By Anton Bagayev / Don't give a fish (www.dontgiveafish.com)
 */
 
@@ -19,25 +19,25 @@ var methods = {
                 /* init this place */
 
                 var defaultOptions = {
-                    // overload this function for city name
+                    // overload this function for getting city name
                     getCity:        null,
-                    // functions for events
+                    // overload this functions for events
                     beforeShow:     null,
                     onShow:         null,
                     onChange:       null,
                     afterHide:     null,
-                    // booleans
+                    // events booleans
                     hideOnChange:  false,
-                    showCopyright:  true,
                     // dialog appearance
                     language:       'ua',
-                    onlyServices:   [],
-                    dialogWidth:    '900px',
-                    dialogHeight:   '500px',
-                    servicesWidth:  '350px',
-                    // api site
-                    baseHref:       'http://smartdelivery.in.ua/'
-                }
+                    onlyServices:   null,
+                    dialogWidth:    null,
+                    dialogHeight:   null,
+                    servicesWidth:  null,
+                    // api site urls
+                    baseHref:       'http://smartdelivery.com.ua/',
+                    staticHref:       'http://static.smartdelivery.com.ua/v1/'
+                };
 
                 // init data
                 $(this).data('smartdelivery', {
@@ -88,18 +88,42 @@ var methods = {
             var city = ((data.options.getCity) === null) ? undefined : data.options.getCity.call();
             if (city === undefined) return;
 
+            var params = {
+                type : 'full',
+                city : city,
+                language : data.options.language,
+            }
+
             var can_show_the_dialog = false;
             var Houses = false;
 
-            var only_services = data.options.onlyServices.join(',');
-            if (only_services != '') only_services = '/onlyservices/' + only_services;
+            if (data.options.onlyServices instanceof Array) {
+
+                var only_services = data.options.onlyServices.join(',');
+                if (only_services !== '') {
+                    params["onlyservices"] = only_services;
+                    only_services = '/onlyservices/' + only_services;
+                }
+            
+            }
+
+            // set sizes
+            
+            // dialog width by default is 80% of screen
+            var dialog_width = data.options.dialogWidth ? data.options.dialogWidth : dialog_width = Math.round($(document).width() / 100 * 80);
+            
+            // dialog height by default is 70% of screen
+            var dialog_height = data.options.dialogHeight ? data.options.dialogHeight : Math.round($(document).height() / 100 * 70);
+            
+            // services width by default is 1/3 of dialog
+            var services_width = data.options.servicesWidth ? data.options.servicesWidth : Math.round(dialog_width / 3);
 
             // call beforeShow event(if exists)
             if (data.options.beforeShow) data.options.beforeShow.call();
 
             // call API
             $.getJSON(
-                data.options.baseHref + 'api/houses/type/full/language/' + data.options.language + only_services + '/city/' + city
+                data.options.baseHref + 'api/houses?' + jQuery.param(params)
             )
             // if API answered correctly
             .done(function( json_data, status, xhr ) {
@@ -139,7 +163,7 @@ var methods = {
                 var dialog_overlay = $('<div/>')
                 .addClass('smartdelivery-dialog-overlay')
                 .css({
-                    'height': $(document).height()
+                    height: $(document).height()
                 })
                 .click(function() {
                     $this.smartdelivery('hide');
@@ -150,71 +174,101 @@ var methods = {
                 // init and show dialog
 
                 var dialog = $('<div/>')
-                .addClass('smartdelivery-dialog')
-                .css({
-                    'width':  data.options.dialogWidth,
-                    'height': data.options.dialogHeight
-                });
+                .addClass('smartdelivery-dialog');
 
                 $('body').append(dialog);
 
-                dialog.css({top:'50%',left:'50%',margin:'-'+(dialog.height() / 2)+'px 0 0 -'+(dialog.width() / 2)+'px'});
-
                 // init and show dialog closer
+
+                var header = $('<div/>')
+                        .addClass('smartdelivery-header')
+                        .append($this.smartdelivery('_getFrase', 'dialog-header') + ' ' + city);
+;
 
                 var dialog_closer = $('<div/>')
                 .addClass('smartdelivery-dialog-closer')
                 .attr('title', $this.smartdelivery('_getFrase', 'dialog-hide'))
                 .css({
-                    'top' : dialog.offset().top - $(document).scrollTop(),
-                    'left' : dialog.offset().left + dialog.outerWidth() - $(document).scrollLeft(),
-                    'background-image': 'url(' + data.options.baseHref + 'public/jquery-plugin/img/closer.png)'
+                    "background-image": 'url(' + data.options.staticHref + '/dialog/img/closer.png)'
                 })
                 .click(function() {
                     $this.smartdelivery('hide');
                 });
 
-                $('body').append(dialog_closer);
+                $(header).append(dialog_closer);
+                $(dialog).append(header);
+
+                // init filters
+                
+                var services_filter = $('<div />')
+                .addClass('smartdelivery-dialog-filter');
 
                 // init and show services overlay
 
                 var services_overlay = $('<div />')
                 .addClass('smartdelivery-dialog-services-overlay')
                 .css({
-                    'width':  data.options.servicesWidth,
-                    'height': data.options.dialogHeight
+                    width: services_width,
+                    height: dialog_height
                 });
 
+                services_overlay.append(services_filter);
                 dialog.append(services_overlay);
 
                 // append services selector
 
                 var select_services = $('<select></select>')
-                .click(function() {
-                    showHouses($(this).val());
+                services_filter.append(select_services);
+
+                // append services text finder
+
+                var services_finder = $('<input />').attr({
+                    type: 'text',
+                    placeholder: $this.smartdelivery('_getFrase', 'filter-text-placeholder') + '...'
                 });
 
-                services_overlay.append(select_services);
+                services_filter.append(services_finder);
 
-                var select = $('<ul></ul>');
+                // append events for filtering
+                
+                select_services.click(function() {
+                    filterHouses(select_services.val(), services_finder.val());
+                });
+                
+                services_finder.keyup(function() {
+                    filterHouses(select_services.val(), services_finder.val());
+                });
+
+                // append list for warehouses
+
+                var select = $('<ul/>');
                 services_overlay.append(select);
+
+                // append empty filter message
+                
+                var empty_filter_message = $('<p/>')
+                        .text($this.smartdelivery('_getFrase' ,'filter-result-empty'))
+                        .css({diplay : 'none'});
+                
+                services_filter.append(empty_filter_message);
 
                 // append map to dialog
 
-                dialog.append(
-                    $('<div id="smartdelivery_map_canvas"></div>').css({
-                        'height': data.options.dialogHeight
-                    })
-                );
+                var map = $('<div/>')
+                        .attr('id', 'smartdelivery_map_canvas')
+                        .css({
+                            height: dialog_height
+                        });
+                dialog.append(map);
 
-                // show copyright (if allowed in options)
-                if (data.options.showCopyright) {
-                    dialog.append(
-                        $('<span/>')
-                        .addClass('smartdelivery-copyright')
-                        .html($this.smartdelivery('_getFrase', 'copyright') + ' <a target="_blank" href="'+data.options.baseHref+'">smartdelivery.in.ua</a>')
-                    );
-                }
+                // show copyright
+                
+                var footer = $('<div/>')
+                    .addClass('smartdelivery-copyright')
+                    .html($this.smartdelivery('_getFrase', 'copyright') + ' <a target="_blank" href="'+data.options.baseHref+'">smartdelivery.com.ua</a>')
+
+                
+                dialog.append(footer);
 
                 // prepare map && list of services and houses
 
@@ -224,14 +278,14 @@ var methods = {
 
                 // prepare geo icons
                 var marker_red = {
-                    url: data.options.baseHref + 'public/jquery-plugin/img/red32.png',
+                    url: data.options.staticHref + '/dialog/img/marker-red.png',
                     size: new google.maps.Size(21, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
                 };
 
                 var marker_purple = {
-                    url: data.options.baseHref + 'public/jquery-plugin/img/purple32.png',
+                    url: data.options.staticHref + '/dialog/img/marker-purple.png',
                     size: new google.maps.Size(20, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
@@ -253,11 +307,10 @@ var methods = {
                     if (Houses[i]['service_sdcode'] == 'SAL') { Houses[i]['marker'].setIcon(marker_purple) }
 
                     Houses[i]['infowindow'] = new google.maps.InfoWindow({
-                        maxWidth: 250,
                         content: '<div class="smartdelivery-dialog-map-infowindow">' + 
                                 '<strong>' + Houses[i]['city'] + '</strong>, '  + Houses[i]['service'] +
-                                '<br />' + '<img class="smartdelivery-icon" src="' + data.options.baseHref + 'public/jquery-plugin/img/geotag.png"> &nbsp;' + Houses[i]['title'] +
-                                '<br />' + '<img class="smartdelivery-icon" src="' + data.options.baseHref + 'public/jquery-plugin/img/phone.png"> &nbsp;' + Houses[i]['phones'] +
+                                '<br />' + Houses[i]['title'] +
+                                '<br /><a href="tel:' + Houses[i]['phones'] + '">' + Houses[i]['phones'] + '</a>' + 
                                 '</div>'
                     });
 
@@ -292,7 +345,7 @@ var methods = {
                 if (Services.length <= 1) select_services.hide();
 
                 // show houses and center fit map to geotags
-                showHouses();
+                filterHouses();
                 map.fitBounds (All_bounds);
 
                 // save current state
@@ -306,13 +359,26 @@ var methods = {
                 data.variables.n = data.variables.house = undefined;
                 data.variables.houses = Houses;
 
+                // center dialog and set size for elements
+
+                dialog.css({
+                    width:  dialog_width,
+                    height: services_overlay.height() + header.height() + footer.height()
+                });
+
+                dialog.css({top:'50%',left:'50%',margin:'-'+(dialog.height() / 2)+'px 0 0 -'+(dialog.width() / 2)+'px'});
+
                 // this function shows warehouses of selected services
-                function showHouses(service) {
+                function filterHouses(service_id, search_string) {
 
                     select.find('li').remove();
 
+                    var regular = new RegExp('^.*' + search_string + '.*$', 'i');
+                    var filtered = 0;
+
                     for (var i in Houses) {
-                        if (service === undefined || service === '' || Houses[i].service == service) {
+                        
+                        if ((service_id === undefined || service_id === '' || Houses[i].service == service_id) && (search_string === undefined || search_string === '' || Houses[i].title.match(regular))) {
 
                             Houses[i]['marker'].setVisible(true);
 
@@ -321,9 +387,9 @@ var methods = {
                             .data('id', i)
                             .click(function() {
                                 $this.smartdelivery('_setHouse', $(this).data('id'));
-//                                    $this.smartdelivery('_setHouse', 1);
                             });
                             select.append(option);
+                            ++filtered;
 
                         }
                         else {
@@ -332,13 +398,19 @@ var methods = {
                         }
 
                     }
+                    
+                    if (filtered) {
+                        empty_filter_message.hide();
+                    }
+                    else {
+                        empty_filter_message.show();
+                    }
 
                 }
 
             });
 
         });
-
 
     },
 
@@ -423,29 +495,44 @@ var methods = {
             if (frase === undefined) return;
 
             return {
-                'dialog-hide' : {
+                "dialog-header" : {
+                    ua: 'Відділення у місті',
+                    ru: 'Отделения в городе',
+                    en: 'Warehouses in'
+                },
+                "dialog-hide" : {
                     ua: 'Натисніть, щоб закрити вікно',
                     ru: 'Нажмите, чтобы закрыть окно',
                     en: 'Click here to hide dialog'
                 },
-                'ajax-error' : {
-                    ua: 'Нажаль, сталася помилка під час запиту: ',
-                    ru: 'Произошла ошибка во время обработки запроса: ',
-                    en: 'Error while ajax: '
+                "ajax-error" : {
+                    ua: 'Нажаль, сталася помилка під час запиту:',
+                    ru: 'Произошла ошибка во время обработки запроса:',
+                    en: 'Error while ajax:'
                 },
-                'ajax-no-houses' : {
+                "ajax-no-houses" : {
                     ua: 'Нажаль, в цьому місті не знайдено жодного складу',
                     ru: 'В этом городе не найдено ни одного склада',
                     en: 'No warehouses in this city'
                 },
-                'show-services' : {
+                "filter-text-placeholder" : {
+                    ua: 'Шукати за адресою чи номером відділення',
+                    ru: 'Искать по адресу или номеру отделения',
+                    en: 'Find by address or warehouse number'
+                },
+                "filter-result-empty" : {
+                    ua: 'Нажаль, за вашим запитом не знайдено жодного відділення',
+                    ru: 'К сожалению, по вашему запросу не найдено ни одного отделения',
+                    en: 'unfortunately, no warehouses found by your request'
+                },
+                "show-services" : {
                     ua: 'Показати всі служби доставки',
                     ru: 'Показать все службы доставки',
                     en: 'Show all delivery companies'
                 },
-                'copyright' : {
-                    ua: 'Ця форма працює завдяки',
-                    ru: 'Эта форма работает благодаря',
+                "copyright" : {
+                    ua: 'Цей діалог працює завдяки',
+                    ru: 'Этот диалог работает благодаря',
                     en: 'This dialog works on'
                 }
 

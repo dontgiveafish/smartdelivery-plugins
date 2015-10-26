@@ -9,36 +9,40 @@
 }
 
 .smartdelivery-dialog {
-    font-family: Arial, Helvetica, sans-serif;
-    
+    font-family: Arial, Helvetica, sans-serif;   
     position: fixed;
-    border-radius: 10px;
-    padding : 15px;
     background : #fff;
     z-index: 1001;
     overflow: hidden;
+    color: #2e2e2e;
+    font-size: 13px;
+}
+
+.smartdelivery-dialog a {
+    color: #2e2e2e!important;
+    text-decoration: underline;    
+}
+
+.smartdelivery-dialog a:hover {
+    color: #4db4d7!important;
 }
 
 .smartdelivery-dialog ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    font-size: 13px;
-    line-height: 24px;
-    color: #666666;
 }
 
 .smartdelivery-dialog li {
     cursor: pointer;
-    padding: 5px;
-    
+    padding: 10px 20px;
 }
 
 .smartdelivery-dialog li:before {
     display: none;
 }
 
-.smartdelivery-dialog li:nth-child(even) {
+.smartdelivery-dialog li:nth-child(odd) {
     background-color: #f0f0f0;
 }
 
@@ -51,61 +55,68 @@
     color: white;
 }
 
-.smartdelivery-dialog-closer {
-    position: fixed;
-    width: 25px;
-    height: 25px;
-    line-height: 25px;
+.smartdelivery-header {
+    background-color: #f75d5d;
+    color: #fff;
+    text-transform: uppercase;
+    vertical-align: middle;
+    height: 60px;
+    line-height: 60px;
+    padding: 0 20px;
+    font-weight: bold;
+    font-size: 17px;
+}
 
-    border-radius: 25px;
-    z-index: 1001;
-    background-color: #fff;
+.smartdelivery-dialog-closer {
+    width: 19px;
+    height: 19px;
+    float: right;
+
+    margin-top: 20px;
     cursor: pointer;
-    margin-left: -13px;
-    margin-top: -13px;
     
     background-repeat: no-repeat;
     background-position: 0 0;
 }
 
 .smartdelivery-dialog-closer:hover {
-    background-position: -25px 0;
+    background-position: -19px 0;
 }
 
 .smartdelivery-dialog-services-overlay {
     overflow-y: scroll;
     float : left;
-    text-align: left;
+    text-align: left;    
 }
-         
-.smartdelivery-dialog-services-overlay select {
+
+.smartdelivery-dialog-filter {
+    margin: 20px 20px 0 20px;
+}
+
+.smartdelivery-dialog-filter select,
+.smartdelivery-dialog-filter input,
+.smartdelivery-dialog-filter p {
     width: 100%;
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 13px;
+    margin: 0 0 20px 0;
+    padding: 5px;
 }
 
 .smartdelivery-dialog-map-infowindow {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
     line-height: 24px;
-    color: #000;
+    color: #2e2e2e;
     text-align: left;
 }
 
-.smartdelivery-icon {
-    vertical-align: middle;
-}
-
 .smartdelivery-copyright {
-    float:right;
-    font-size: 10px;
-    line-height: 14px!important;
+    padding: 0 20px;
+    height: 30px;
+    text-align: right;
+    vertical-align: middle;
+    line-height: 30px;
     color: #000!important;
-
-}
-
-.smartdelivery-copyright a {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #000!important;
-    text-decoration: underline;
 }
