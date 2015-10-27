@@ -30,12 +30,12 @@ var methods = {
                     hideOnChange:  false,
                     // dialog appearance
                     language:       'ua',
-                    onlyServices:   null,
+                    onlyServices:   [],
                     dialogWidth:    null,
                     dialogHeight:   null,
                     servicesWidth:  null,
                     // api site urls
-                    baseHref:       'http://smartdelivery.com.ua/',
+                    baseHref:       'http://api.smartdelivery.com.ua/v1/',
                     staticHref:       'http://static.smartdelivery.com.ua/v1/'
                 };
 
@@ -86,26 +86,20 @@ var methods = {
             // prepare city name and variables
 
             var city = ((data.options.getCity) === null) ? undefined : data.options.getCity.call();
-            if (city === undefined) return;
+            if (city === undefined || city === '') {
+                alert($this.smartdelivery('_getFrase', 'give-me-city-title'));
+                return;
+            }
 
             var params = {
                 type : 'full',
                 city : city,
                 language : data.options.language,
+                onlyservices : data.options.onlyServices
             }
 
             var can_show_the_dialog = false;
             var Houses = false;
-
-            if (data.options.onlyServices instanceof Array) {
-
-                var only_services = data.options.onlyServices.join(',');
-                if (only_services !== '') {
-                    params["onlyservices"] = only_services;
-                    only_services = '/onlyservices/' + only_services;
-                }
-            
-            }
 
             // set sizes
             
@@ -123,7 +117,7 @@ var methods = {
 
             // call API
             $.getJSON(
-                data.options.baseHref + 'api/houses?' + jQuery.param(params)
+                data.options.baseHref + '/houses?' + jQuery.param(params)
             )
             // if API answered correctly
             .done(function( json_data, status, xhr ) {
@@ -183,7 +177,7 @@ var methods = {
                 var header = $('<div/>')
                         .addClass('smartdelivery-header')
                         .append($this.smartdelivery('_getFrase', 'dialog-header') + ' ' + city);
-;
+
 
                 var dialog_closer = $('<div/>')
                 .addClass('smartdelivery-dialog-closer')
@@ -303,12 +297,12 @@ var methods = {
                         id: i
                     });
 
-                    if (Houses[i]['service_sdcode'] == 'SNP') { Houses[i]['marker'].setIcon(marker_red) }
-                    if (Houses[i]['service_sdcode'] == 'SAL') { Houses[i]['marker'].setIcon(marker_purple) }
+                    if (Houses[i]['service_alias'] == 'novaposhta') { Houses[i]['marker'].setIcon(marker_red) }
+                    if (Houses[i]['service_alias'] == 'autolux') { Houses[i]['marker'].setIcon(marker_purple) }
 
                     Houses[i]['infowindow'] = new google.maps.InfoWindow({
                         content: '<div class="smartdelivery-dialog-map-infowindow">' + 
-                                '<strong>' + Houses[i]['city'] + '</strong>, '  + Houses[i]['service'] +
+                                '<strong>' + Houses[i]['city_title'] + '</strong>, '  + Houses[i]['service_title'] +
                                 '<br />' + Houses[i]['title'] +
                                 '<br /><a href="tel:' + Houses[i]['phones'] + '">' + Houses[i]['phones'] + '</a>' + 
                                 '</div>'
@@ -323,8 +317,8 @@ var methods = {
 
                     All_bounds.extend(Houses[i]['latlng']);
 
-                    if (Services.indexOf(Houses[i].service) == -1) {
-                        Services.push(Houses[i].service);
+                    if (Services.indexOf(Houses[i].service_title) == -1) {
+                        Services.push(Houses[i].service_title);
                     }
 
                 }
@@ -378,11 +372,11 @@ var methods = {
 
                     for (var i in Houses) {
                         
-                        if ((service_id === undefined || service_id === '' || Houses[i].service == service_id) && (search_string === undefined || search_string === '' || Houses[i].title.match(regular))) {
+                        if ((service_id === undefined || service_id === '' || Houses[i].service_title == service_id) && (search_string === undefined || search_string === '' || Houses[i].title.match(regular))) {
 
                             Houses[i]['marker'].setVisible(true);
 
-                            var option = $('<li>'+Houses[i].service+': '+Houses[i].title+'</li>')
+                            var option = $('<li>'+Houses[i].service_title+': '+Houses[i].title+'</li>')
                             .addClass('house'+i)
                             .data('id', i)
                             .click(function() {
@@ -504,6 +498,11 @@ var methods = {
                     ua: 'Натисніть, щоб закрити вікно',
                     ru: 'Нажмите, чтобы закрыть окно',
                     en: 'Click here to hide dialog'
+                },
+                "give-me-city-title" : {
+                    ua: 'Будь ласка, спочатку вкажіть місто',
+                    ru: 'Пожалуйста, сначала укажите город',
+                    en: 'Please fill city first'
                 },
                 "ajax-error" : {
                     ua: 'Нажаль, сталася помилка під час запиту:',
