@@ -104,10 +104,10 @@ var methods = {
             // set sizes
             
             // dialog width by default is 80% of screen
-            var dialog_width = data.options.dialogWidth ? data.options.dialogWidth : dialog_width = Math.round($(document).width() / 100 * 80);
+            var dialog_width = data.options.dialogWidth ? data.options.dialogWidth : dialog_width = Math.round($(window).innerWidth() / 100 * 80);
             
             // dialog height by default is 70% of screen
-            var dialog_height = data.options.dialogHeight ? data.options.dialogHeight : Math.round($(document).height() / 100 * 70);
+            var dialog_height = data.options.dialogHeight ? data.options.dialogHeight : Math.round($(window).innerHeight() / 100 * 70);
             
             // services width by default is 1/3 of dialog
             var services_width = data.options.servicesWidth ? data.options.servicesWidth : Math.round(dialog_width / 3);
