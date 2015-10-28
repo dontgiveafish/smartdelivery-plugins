@@ -36,7 +36,7 @@ var methods = {
                     servicesWidth:  null,
                     // api site urls
                     baseHref:       'http://api.smartdelivery.com.ua/v1/',
-                    staticHref:       'http://static.smartdelivery.com.ua/v1/'
+                    staticHref:       'http://static.smartdelivery.com.ua/v1/dialog/img/'
                 };
 
                 // init data
@@ -157,6 +157,7 @@ var methods = {
                 var dialog_overlay = $('<div/>')
                 .addClass('smartdelivery-dialog-overlay')
                 .css({
+                    background: 'url(' + data.options.staticHref + '/overlay.png' + ')',
                     height: $(document).height()
                 })
                 .click(function() {
@@ -183,7 +184,7 @@ var methods = {
                 .addClass('smartdelivery-dialog-closer')
                 .attr('title', $this.smartdelivery('_getFrase', 'dialog-hide'))
                 .css({
-                    "background-image": 'url(' + data.options.staticHref + '/dialog/img/closer.png)'
+                    "background-image": 'url(' + data.options.staticHref + '/closer.png)'
                 })
                 .click(function() {
                     $this.smartdelivery('hide');
@@ -272,14 +273,14 @@ var methods = {
 
                 // prepare geo icons
                 var marker_red = {
-                    url: data.options.staticHref + '/dialog/img/marker-red.png',
+                    url: data.options.staticHref + '/marker-red.png',
                     size: new google.maps.Size(21, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
                 };
 
                 var marker_purple = {
-                    url: data.options.staticHref + '/dialog/img/marker-purple.png',
+                    url: data.options.staticHref + '/marker-purple.png',
                     size: new google.maps.Size(20, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
