@@ -36,13 +36,16 @@ var methods = {
                     servicesWidth:  null,
                     // api site urls
                     baseHref:       'http://api.smartdelivery.com.ua/v1/',
-                    staticHref:       'http://static.smartdelivery.com.ua/v1/dialog/img/'
+                    styleHref:       'http://static.smartdelivery.com.ua/v1/dialog/style/'
                 };
 
                 // init data
+
+                var new_options = $.extend({},defaultOptions, options);
+                
                 $(this).data('smartdelivery', {
                     target : $this,
-                    options: $.extend({},defaultOptions, options),
+                    options: new_options,
                     variables: {},
                     elements: {} // for DOM objects
                 });
@@ -52,6 +55,9 @@ var methods = {
                     $(this).smartdelivery('show'); 
                     return false;
                 });
+
+                // add css file to header
+                $('head').append('<link rel="stylesheet" type="text/css" href="' + new_options.styleHref + 'smartdelivery.css">');
 
             }
 
@@ -157,7 +163,7 @@ var methods = {
                 var dialog_overlay = $('<div/>')
                 .addClass('smartdelivery-dialog-overlay')
                 .css({
-                    background: 'url(' + data.options.staticHref + '/overlay.png' + ')',
+                    background: 'url(' + data.options.styleHref + '/overlay.png' + ')',
                     height: $(document).height()
                 })
                 .click(function() {
@@ -176,6 +182,7 @@ var methods = {
                 // init and show dialog closer
 
                 var header = $('<div/>')
+                        .css('display', 'block')
                         .addClass('smartdelivery-header')
                         .append($this.smartdelivery('_getFrase', 'dialog-header') + ' ' + city);
 
@@ -184,7 +191,7 @@ var methods = {
                 .addClass('smartdelivery-dialog-closer')
                 .attr('title', $this.smartdelivery('_getFrase', 'dialog-hide'))
                 .css({
-                    "background-image": 'url(' + data.options.staticHref + '/closer.png)'
+                    "background-image": 'url(' + data.options.styleHref + '/closer.png)'
                 })
                 .click(function() {
                     $this.smartdelivery('hide');
@@ -196,7 +203,8 @@ var methods = {
                 // init filters
                 
                 var services_filter = $('<div />')
-                .addClass('smartdelivery-dialog-filter');
+                        .css('display', 'block')
+                        .addClass('smartdelivery-dialog-filter');
 
                 // init and show services overlay
 
@@ -252,6 +260,7 @@ var methods = {
                 var map = $('<div/>')
                         .attr('id', 'smartdelivery_map_canvas')
                         .css({
+                            display: 'block',
                             height: dialog_height
                         });
                 dialog.append(map);
@@ -259,8 +268,9 @@ var methods = {
                 // show copyright
                 
                 var footer = $('<div/>')
+                    .css('display', 'block')
                     .addClass('smartdelivery-copyright')
-                    .html($this.smartdelivery('_getFrase', 'copyright') + ' <a target="_blank" href="'+data.options.baseHref+'">smartdelivery.com.ua</a>')
+                    .html($this.smartdelivery('_getFrase', 'copyright') + ' <a target="_blank" href="http://smartdelivery.com.ua">smartdelivery.com.ua</a>')
 
                 
                 dialog.append(footer);
@@ -273,14 +283,14 @@ var methods = {
 
                 // prepare geo icons
                 var marker_red = {
-                    url: data.options.staticHref + '/marker-red.png',
+                    url: data.options.styleHref + '/marker-red.png',
                     size: new google.maps.Size(21, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
                 };
 
                 var marker_purple = {
-                    url: data.options.staticHref + '/marker-purple.png',
+                    url: data.options.styleHref + '/marker-purple.png',
                     size: new google.maps.Size(20, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
