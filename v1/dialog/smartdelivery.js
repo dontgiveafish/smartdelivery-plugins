@@ -291,7 +291,14 @@ var methods = {
 
                 var marker_purple = {
                     url: data.options.styleHref + '/marker-purple.png',
-                    size: new google.maps.Size(20, 32),
+                    size: new google.maps.Size(21, 32),
+                    origin: new google.maps.Point(0,0),
+                    anchor: new google.maps.Point(0, 32)
+                };
+                
+                var marker_green = {
+                    url: data.options.styleHref + '/marker-green.png',
+                    size: new google.maps.Size(21, 32),
                     origin: new google.maps.Point(0,0),
                     anchor: new google.maps.Point(0, 32)
                 };
@@ -310,6 +317,7 @@ var methods = {
 
                     if (Houses[i]['service_alias'] == 'novaposhta') { Houses[i]['marker'].setIcon(marker_red) }
                     if (Houses[i]['service_alias'] == 'autolux') { Houses[i]['marker'].setIcon(marker_purple) }
+                    if (Houses[i]['service_alias'] == 'privatbank') { Houses[i]['marker'].setIcon(marker_green) }
 
                     Houses[i]['infowindow'] = new google.maps.InfoWindow({
                         content: '<div class="smartdelivery-dialog-map-infowindow">' + 
