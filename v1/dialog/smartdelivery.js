@@ -30,7 +30,7 @@ var methods = {
                     hideOnChange:  false,
                     // dialog appearance
                     language:       'ua',
-                    onlyServices:   [],
+                    serviceFilter:   [],
                     dialogWidth:    null,
                     dialogHeight:   null,
                     servicesWidth:  null,
@@ -101,14 +101,14 @@ var methods = {
                 type : 'full',
                 city : city,
                 language : data.options.language,
-                onlyservices : data.options.onlyServices
+                service_filter : data.options.serviceFilter
             }
 
             var can_show_the_dialog = false;
             var Houses = false;
 
             // set sizes
-            
+
             // dialog width by default is 80% of screen
             var dialog_width = data.options.dialogWidth ? data.options.dialogWidth : dialog_width = Math.round($(window).innerWidth() / 100 * 80);
             
@@ -164,7 +164,7 @@ var methods = {
                 .addClass('smartdelivery-dialog-overlay')
                 .css({
                     background: 'url(' + data.options.styleHref + '/overlay.png' + ')',
-                    height: $(document).height()
+                    height: $(window).height()
                 })
                 .click(function() {
                     $this.smartdelivery('hide');
@@ -233,8 +233,8 @@ var methods = {
                 services_filter.append(services_finder);
 
                 // append events for filtering
-                
-                select_services.click(function() {
+
+                select_services.change(function() {
                     filterHouses(select_services.val(), services_finder.val());
                 });
                 
@@ -257,13 +257,14 @@ var methods = {
 
                 // append map to dialog
 
-                var map = $('<div/>')
+                var map_canvas = $('<div/>')
                         .attr('id', 'smartdelivery_map_canvas')
                         .css({
                             display: 'block',
+                            width: dialog_width - services_width,
                             height: dialog_height
                         });
-                dialog.append(map);
+                dialog.append(map_canvas);
 
                 // show copyright
                 
