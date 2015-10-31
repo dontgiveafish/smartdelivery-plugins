@@ -57,7 +57,7 @@ var methods = {
                 });
 
                 // add css file to header
-                $('head').append('<link rel="stylesheet" type="text/css" href="' + new_options.styleHref + 'smartdelivery.css">');
+                $('head').append('<link rel="stylesheet" type="text/css" href="' + new_options.styleHref + '/smartdelivery.css">');
 
             }
 
@@ -327,7 +327,7 @@ var methods = {
                                 '<br /><a href="tel:' + Houses[i]['phones'] + '">' + Houses[i]['phones'] + '</a>' + 
                                 '</div>'
                     });
-
+                    
                     // event to set house on click
                     google.maps.event.addListener(Houses[i]['marker'], 'click', function() {
                         $this.smartdelivery('_setHouse', this.id, true);

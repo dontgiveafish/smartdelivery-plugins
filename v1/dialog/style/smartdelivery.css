@@ -95,6 +95,7 @@
 .smartdelivery-dialog-filter select,
 .smartdelivery-dialog-filter input,
 .smartdelivery-dialog-filter p {
+    font-family: Arial, Helvetica, sans-serif;
     width: 100%;
    -webkit-box-sizing: border-box;
    -moz-box-sizing: border-box;

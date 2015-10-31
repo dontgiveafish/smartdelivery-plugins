@@ -6,7 +6,7 @@ Main site: http://smartdelivery.com.ua
 
 Don't forget to read the wiki https://github.com/dontgiveafish/smartdelivery-plugins/wiki
 
-Take a look through changelog https://github.com/dontgiveafish/smartdelivery-plugins/CHANGELOG.md
+Take a look through changelog https://github.com/dontgiveafish/smartdelivery-plugins/blob/master/CHANGELOG.md
 
 See future changes or track a bug on issues https://github.com/dontgiveafish/smartdelivery-plugins/issues
 
