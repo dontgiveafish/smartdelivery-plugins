@@ -164,7 +164,7 @@ var methods = {
                 .addClass('smartdelivery-dialog-overlay')
                 .css({
                     background: 'url(' + data.options.styleHref + '/overlay.png' + ')',
-                    height: $(window).height()
+                    height: $(document).height()
                 })
                 .click(function() {
                     $this.smartdelivery('hide');
