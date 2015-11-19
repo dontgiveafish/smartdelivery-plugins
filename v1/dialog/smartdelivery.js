@@ -98,7 +98,6 @@ var methods = {
             }
 
             var params = {
-                type : 'full',
                 city : city,
                 language : data.options.language,
                 service_filter : data.options.serviceFilter
