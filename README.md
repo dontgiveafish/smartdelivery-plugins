@@ -4,6 +4,8 @@ Hello, this is repository of Smartdelivery plugins.
 
 Main site: http://smartdelivery.com.ua
 
+First release publication on DOU http://dou.ua/lenta/articles/dou-projector-smartdelivery/
+
 Don't forget to read the wiki https://github.com/dontgiveafish/smartdelivery-plugins/wiki
 
 Take a look through changelog https://github.com/dontgiveafish/smartdelivery-plugins/blob/master/CHANGELOG.md
