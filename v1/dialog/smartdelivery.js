@@ -1,5 +1,5 @@
 /*
-        Smartdelivery dialog v0.9 - another jQuery Plugin
+        Smartdelivery dialog v0.9a - another jQuery Plugin
         By Anton Bagayev / Don't give a fish (www.dontgiveafish.com)
 */
 
@@ -306,6 +306,10 @@ var methods = {
                 // parse houses
                 for (var i in Houses) {
 
+                    if (Houses[i].latitude == 0 || Houses[i].longitude == 0) {
+                        continue;
+                    }
+
                     Houses[i]['latlng'] = new google.maps.LatLng(Houses[i].latitude, Houses[i].longitude);
 
                     Houses[i]['marker'] = new google.maps.Marker({
@@ -393,7 +397,9 @@ var methods = {
                         
                         if ((service_id === undefined || service_id === '' || Houses[i].service_title == service_id) && (search_string === undefined || search_string === '' || Houses[i].title.match(regular))) {
 
-                            Houses[i]['marker'].setVisible(true);
+                            if (Houses[i].latitude != 0 && Houses[i].longitude != 0) {
+                                Houses[i]['marker'].setVisible(true);
+                            }
 
                             var option = $('<li>'+Houses[i].service_title+': '+Houses[i].title+'</li>')
                             .addClass('house'+i)
@@ -405,7 +411,7 @@ var methods = {
                             ++filtered;
 
                         }
-                        else {
+                        else if (Houses[i].latitude != 0 && Houses[i].longitude != 0) {
                             Houses[i]['marker'].setVisible(false);
                             Houses[i]['infowindow'].close();
                         }
@@ -477,7 +483,9 @@ var methods = {
             // deselect(if selected) current house and hide infowindow
             if (last_n !== undefined) {
                 select.find('li.house'+last_n).removeClass('selected');
-                houses[last_n]['infowindow'].close();
+                if (houses[last_n]['infowindow'] != undefined) {
+                    houses[last_n]['infowindow'].close();
+                }
             }
 
             // select current warehouse
@@ -488,7 +496,9 @@ var methods = {
 
             // show infowindow
             var marker = houses[n]['marker'];
-            houses[n]['infowindow'].open(data.elements.map, marker);
+            if (houses[n]['infowindow'] != undefined) {
+                houses[n]['infowindow'].open(data.elements.map, marker);
+            }
 
             // save current state
             data.variables.house = houses[n];
