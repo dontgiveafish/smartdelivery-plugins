@@ -35,7 +35,7 @@ var methods = {
                     dialogHeight:   null,
                     servicesWidth:  null,
                     // api site urls
-                    baseHref:       'http://api.smartdelivery.com.ua/v1/',
+                    baseHref:       'https://api.smartdelivery.com.ua/v1/',
                     styleHref:       'http://static.smartdelivery.com.ua/v1/dialog/style/'
                 };
 
